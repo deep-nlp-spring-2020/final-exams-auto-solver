@@ -1,1 +1,0 @@
-# final-exams-auto-solver
