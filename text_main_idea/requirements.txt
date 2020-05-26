@@ -1,0 +1,5 @@
+torch
+transformers
+pymorphy2
+nltk
+sklearn
