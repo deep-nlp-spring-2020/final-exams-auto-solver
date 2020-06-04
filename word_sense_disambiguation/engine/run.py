@@ -20,6 +20,7 @@ import config
 from os import listdir
 from os.path import isfile, join
 from sklearn.metrics.pairwise import cosine_similarity
+from transformers import BertConfig, AutoTokenizer, AutoModelWithLMHead,AutoModel,BertForTokenClassification
 
 '''
 get all files from data directory to list
@@ -52,7 +53,6 @@ def make_data_(mypath, dump = True, name_dump = 'train.json'):
     else:
         return all_data    
     
-    
 def sent_token_embedding(model, bert_tokenizer, instance, layers_to_retrieve,method = 'concat_last_n_layers_cls'):
     tokenized_word = bert_tokenizer.tokenize("[CLS] " + instance + " [SEP]")
     
@@ -62,8 +62,11 @@ def sent_token_embedding(model, bert_tokenizer, instance, layers_to_retrieve,met
     input_ids_ = torch.tensor([input_ids], dtype = torch.long)
 
     with torch.no_grad():
-        embeddings, _ = model(input_ids_, attention_mask_)
-
+        try:
+            embeddings, _ = model(input_ids_, attention_mask_)
+        except ValueError:
+            _, embeddings,_ = model(input_ids_, attention_mask_)
+            embeddings = list(embeddings)[:12]
     last_layers_embeddings = []
     for layer in layers_to_retrieve:
         last_layers_embeddings.append(embeddings[layer])
@@ -82,7 +85,6 @@ def sent_token_embedding(model, bert_tokenizer, instance, layers_to_retrieve,met
         return torch.cat([embs_last.mean(0)[i] for i in range(len(last_layers_embeddings))], dim=0).numpy()
         
         
-
         
 
 def embed_target_sentence(model, text, target_word):
@@ -117,7 +119,9 @@ def contextualized_word_embedding(model, text, target_word, layers_to_retrieve =
         target_sentence = ' '.join(sentences)
         start_index = 0
         end_index = len(tokenizer.tokenize(target_sentence)) - 2
-
+        print("couldn't find target word in sentences")
+        print('target sentence: {0} \n word : {1}'.format(target_sentence, target_word))
+        print()
     
     words = tokenizer.tokenize(target_sentence)
     words.insert(index_of_word_in_sentence, '|')
@@ -136,7 +140,11 @@ def contextualized_word_embedding(model, text, target_word, layers_to_retrieve =
     input_ids_ = torch.tensor([input_ids], dtype = torch.long)
 
     with torch.no_grad():
-        embeddings, _ = model(input_ids_, attention_mask_)
+        try:
+            embeddings, _ = model(input_ids_, attention_mask_)
+        except ValueError:
+            _, embeddings,_ = model(input_ids_, attention_mask_)
+            embeddings = list(embeddings)[:12]
     
     last_layers_embeddings = []
     for layer in layers_to_retrieve:
@@ -186,8 +194,8 @@ def cosine_argmax(embedded_text, embedded_list_of_variants):
 if __name__ == '__main__':
     morph = pymorphy2.MorphAnalyzer()
     tokenizer = TextTokenizer()
-    bert_tokenizer = BertTokenizer.from_pretrained('bert-base-multilingual-cased', do_lower_case = False)
-    model = BertModel.from_pretrained('bert-base-multilingual-cased')
+    bert_tokenizer = config.bert_tokenizer
+    model = config.model
     model.eval()
     correct = []
     predicted = []
@@ -201,7 +209,7 @@ if __name__ == '__main__':
         text = clean_text_additional(text)
         target = get_correct_label(file)
         
-        embedded_text = contextualized_word_embedding(model, text, word, layers_to_retrieve = [9, 11])
+        embedded_text = contextualized_word_embedding(model, text, word, layers_to_retrieve = layers_to_embed)
         
         embeddings_cases = []
         for j in range(len(variants)):
