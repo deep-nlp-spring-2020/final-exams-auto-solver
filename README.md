@@ -48,36 +48,36 @@ Punctuator решает задачки 17-20 ЕГЭ.
 
 | model | best model train epoch | best model accuracy |
 |-------|------------------------|---------------------|
-| DeepPavlov/rubert-base-cased | 5 | 98.55% |
-| DeepPavlov/rubert-base-cased-sentence | 8 | 98.67% |
-| DeepPavlov/bert-base-multilingual-cased-sentence | 8 | 98.24% |
-| bert-base-multilingual-cased | 10 | 98.63% |
-| bert-base-multilingual-uncased | 9 | 98.55% |
+| DeepPavlov/rubert-base-cased | 19 | 98.88% |
+| DeepPavlov/rubert-base-cased-sentence | 19 | 98.80% |
+| DeepPavlov/bert-base-multilingual-cased-sentence | 19 | 98.19% |
+| bert-base-multilingual-cased | 16 | 98.51% |
+| bert-base-multilingual-uncased | 18 | 98.61% |
 
 ### Результаты отдельной модели на каждой из 4х задач
 
 | task | model | best model train epoch | best model accuracy |
 |------|-------|------------------------|---------------------|
-| 17 | DeepPavlov/rubert-base-cased | 8 | 98.72% |
-| 17 | DeepPavlov/rubert-base-cased-sentence | 5 | 98.88% |
-| 17 | DeepPavlov/bert-base-multilingual-cased-sentence | 8 | 98.08% |
-| 17 | bert-base-multilingual-cased | 7 | 98.80% |
-| 17 | bert-base-multilingual-uncased | 3 | 98.56% |
-| 18 | DeepPavlov/rubert-base-cased | 6 | 95.65% |
-| 18 | DeepPavlov/rubert-base-cased-sentence | 5 | 95.45% |
-| 18 | DeepPavlov/bert-base-multilingual-cased-sentence | 7 | 92.87% |
-| 18 | bert-base-multilingual-cased | 10 | 94.09% |
-| 18 | bert-base-multilingual-uncased | 6 | 94.70% |
-| 19 | DeepPavlov/rubert-base-cased | 5 | 99.39% |
-| 19 | DeepPavlov/rubert-base-cased-sentence | 5 | 99.31% |
-| 19 | DeepPavlov/bert-base-multilingual-cased-sentence | 8 | 99.65% |
-| 19 | bert-base-multilingual-cased | 3 | 99.22% |
-| 19 | bert-base-multilingual-uncased | 9 | 99.65% |
-| 20 | DeepPavlov/rubert-base-cased | 4 | 98.91% |
-| 20 | DeepPavlov/rubert-base-cased-sentence | 8 | 98.52% |
-| 20 | DeepPavlov/bert-base-multilingual-cased-sentence | 6 | 98.44% |
-| 20 | bert-base-multilingual-cased | 4 | 98.67% |
-| 20 | bert-base-multilingual-uncased | 4 | 98.44% |
+| 17 | DeepPavlov/rubert-base-cased | 5 | 98.88% |
+| 17 | DeepPavlov/rubert-base-cased-sentence | 9 | 98.48% |
+| 17 | DeepPavlov/bert-base-multilingual-cased-sentence | 21 | 98.00% |
+| 17 | bert-base-multilingual-cased | 5 | 98.40% |
+| 17 | bert-base-multilingual-uncased | 12 | 98.80% |
+| 18 | DeepPavlov/rubert-base-cased | 6 | 96.60% |
+| 18 | DeepPavlov/rubert-base-cased-sentence | 16 | 93.21% |
+| 18 | DeepPavlov/bert-base-multilingual-cased-sentence | 14 | 93.21% |
+| 18 | bert-base-multilingual-cased | 12 | 95.04% |
+| 18 | bert-base-multilingual-uncased | 5 | 95.92% |
+| 19 | DeepPavlov/rubert-base-cased | 10 | 99.39% |
+| 19 | DeepPavlov/rubert-base-cased-sentence | 13 | 99.13% |
+| 19 | DeepPavlov/bert-base-multilingual-cased-sentence | 8 | 99.22% |
+| 19 | bert-base-multilingual-cased | 20 | 99.39% |
+| 19 | bert-base-multilingual-uncased | 4 | 99.22% |
+| 20 | DeepPavlov/rubert-base-cased | 14 | 99.22% |
+| 20 | DeepPavlov/rubert-base-cased-sentence | 14 | 98.12% |
+| 20 | DeepPavlov/bert-base-multilingual-cased-sentence | 8 | 98.59% |
+| 20 | bert-base-multilingual-cased | 17 | 98.98% |
+| 20 | bert-base-multilingual-uncased | 17 | 98.83% |
 
 
 ### Выводы
@@ -98,7 +98,7 @@ Punctuator решает задачки 17-20 ЕГЭ.
 
 ### Что дальше?
 
-1. Запустить эксперименты на бОльшем кол-ве эпох.
+1. Запустить эксперименты на бОльшем кол-ве эпох (сделано, ноутбук с экспериментами и отчет обновлены).
 
 1. Улучшить результат на задаче 18.<br>
 Можно попробовать другой подход при обучении или вариант, предложенный куратором.<br>
