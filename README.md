@@ -194,3 +194,85 @@ Main_Text_Idea решает задачу №1 ЕГЭ.
 - https://medium.com/analytics-vidhya/semantic-similarity-in-sentences-and-bert-e8d34f5a4677
 - https://towardsdatascience.com/overview-of-text-similarity-metrics-3397c4601f50
 - https://medium.com/@adriensieg/text-similarities-da019229c894
+
+
+
+
+## Word sense disambiguation
+
+Word sense disambiguation rue решает задачу 3 из ЕГЭ.
+
+Описание задания: Прочитайте фрагмент словарной статьи, в которой приводятся значения слова WORD. Определите значение, в котором это слово употреблено во втором (k) предложении текста. Выпишите цифру, соответствующую этому значению в приведённом фрагменте словарной статьи.
+
+Участники: `zhav1k`
+
+Эта задача на сравнение схожести эмбеддингов.
+
+Литература:
+- https://mccormickml.com/2019/05/14/BERT-word-embeddings-tutorial/
+- https://www.markiiisys.com/blog/finding-cosine-similarity-between-sentences-using-bert-as-a-service/
+- https://medium.com/analytics-vidhya/semantic-similarity-in-sentences-and-bert-e8d34f5a4677
+- https://towardsdatascience.com/nlp-extract-contextualized-word-embeddings-from-bert-keras-tf-67ef29f60a7b
+- http://jalammar.github.io/illustrated-bert/
+
+### Эксперименты
+
+Модели:
+- DeepPavlov/rubert-base-cased
+- bert-base-multilingual-cased
+
+Слои:
+- 11
+- с 8 по 11
+- с 0 по 11
+- 9 и 11
+
+Как представлять вектор:
+- конкатенация <CLS> токенов
+- среднее <CLS> токенов
+- конкатенация всех токенов
+- среднее всех токенов
+
+Косинусная мера между:
+- эмбеддингом текста и эмбеддингами вариантов ответа
+- эмбеддингом ключевого предложения и эмбеддингами вариантов ответа
+- контекстуальным эмбеддингом слова в предложении и эмбеддингами вариантов ответа
+
+Метрика - Accuracy на тесте.
+
+Так как различных комбинаций аж 72 штуки, приведены основные результаты.
+
+Также я пробовал чистить дополнительно текст от разных вставок и символов (цифр предложений, пропущенный текст в виде <...>). Первое никакого результата не дает,
+а вот в эмбеддингах предложений <...> играет некую роль, т.к результат становится хуже. (1)
+
+Также пробовал посмотреть взаимосвязь между "предсказаниями" разных варинатов эмбеддингов, с целью выяснить, есть ли смысл пытаться
+взвешивать результаты косинусной близости между методами (своего рода ансамбль). Однако результаты косинусной близости оказывались сильно  
+коррелированными, и я не увидел смысла тюнить веса на методы.
+
+### Основные результаты
+
+| model | layers | represent layers | cosine between | accuracy test |
+| bert-bert-base-multilingual-cased | 8 - 11 | concat CLS | text variants | 36% |
+| bert-bert-base-multilingual-cased | 9 11 | concat all | sentence variants | 41% |
+| bert-bert-base-multilingual-cased | 11 | - | contextualized word embedding variants | 46% |
+| bert-bert-base-multilingual-cased | 9 11 | mean | contextualized word embedding variants | 48.57% |
+| bert-bert-base-multilingual-cased | 0 - 11 | mean | contextualized word embedding variants | 48.57% |
+| DeepPavlov/rubert-base-cased | 9 11 | mean | contextualized word embedding variants | 40% |
+| DeepPavlov/rubert-base-cased | 0 - 11 | mean | contextualized word embedding variants | 54.28% |
+
+### Выводы
+
+Выводы: задача оказалась достаточно сложной, по моему мнению в ней присутствует большая доля стохастики, так как от изменения пары символов, могло меняться качество предсказаний.
+Поэтому один из выводов, и, возможно, вариант дальнейшего действия - чистка/обработка данных (хотя пока плохо представляю, что в этом направлении еще можно сделать).
+
+Также интересно заметить, что для RuBert и multilingual BERT были оптимальны разные комбинации hidden layers. + всегда стоит пробовать разновидности BERT (RuBert в моем случае), даже если говорят, что он обычно не выстреливает:)
+Лучшими эмбеддингами под задачу оказись эмбеддинги из DeepPavlov/rubert-base-cased
+
+
+### Что дальше?
+
+1. Пробовать чистить данные еще больше.
+
+2. Пробовать более большие модели (ex. xlm-roberta)
+
+
