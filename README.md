@@ -252,9 +252,10 @@ Word sense disambiguation rue решает задачу 3 из ЕГЭ.
 ### Основные результаты
 
 | model | layers | represent layers | cosine between | accuracy test |
+|-------------------|---------|------------|--------|-----|
 | bert-bert-base-multilingual-cased | 8 - 11 | concat CLS | text variants | 36% |
 | bert-bert-base-multilingual-cased | 9 11 | concat all | sentence variants | 41% |
-| bert-bert-base-multilingual-cased | 11 | - | contextualized word embedding variants | 46% |
+| bert-bert-base-multilingual-cased | 11 | no | contextualized word embedding variants | 46% |
 | bert-bert-base-multilingual-cased | 9 11 | mean | contextualized word embedding variants | 48.57% |
 | bert-bert-base-multilingual-cased | 0 - 11 | mean | contextualized word embedding variants | 48.57% |
 | DeepPavlov/rubert-base-cased | 9 11 | mean | contextualized word embedding variants | 40% |
@@ -262,7 +263,7 @@ Word sense disambiguation rue решает задачу 3 из ЕГЭ.
 
 ### Выводы
 
-Выводы: задача оказалась достаточно сложной, по моему мнению в ней присутствует большая доля стохастики, так как от изменения пары символов, могло меняться качество предсказаний.
+Выводы: задача оказалась достаточно сложной, по моему мнению в ней присутствует большая доля стохастики, так как от изменения пары символов, могло меняться качество предсказаний. см. (1)
 Поэтому один из выводов, и, возможно, вариант дальнейшего действия - чистка/обработка данных (хотя пока плохо представляю, что в этом направлении еще можно сделать).
 
 Также интересно заметить, что для RuBert и multilingual BERT были оптимальны разные комбинации hidden layers. + всегда стоит пробовать разновидности BERT (RuBert в моем случае), даже если говорят, что он обычно не выстреливает:)
