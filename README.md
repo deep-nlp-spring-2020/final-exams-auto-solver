@@ -112,3 +112,85 @@ Punctuator решает задачки 17-20 ЕГЭ.
 Поскольку deeppavlov это скорее tf, можно взять реализацию разметки сущностей на торче и ориентироваться на неё https://github.com/huggingface/transformers/tree/master/examples/ner,
 формально задача та же — разметка последовательности.
 ```
+
+
+## Main_Text_Idea
+
+Main_Text_Idea решает задачу №1 ЕГЭ.
+
+Цель: указать номера предложений, в которых передана главная информация, содержащаяся в тексте
+Тип задания: multiple_choice
+Постановка задачи:
+- Собрать дополнительные данные с различных источников: Yandex, fipi, etc.
+- Найти предложения, используя косинусную близость между эмбеддингами вариантов ответа на уровне предложения, полученных с помощью BertEmbedder
+
+Участники: `MTETERIN`
+
+
+
+
+Было собрано приблизительно 200 дополнительных вопросов по задаче поиска главной информации в тексте.
+
+Было принято решение попробовать несколько BERT моделей:
+- DeepPavlov/rubert-base-cased
+- DeepPavlov/rubert-base-cased-sentence
+- DeepPavlov/bert-base-multilingual-cased-sentence
+- bert-base-multilingual-cased
+- xlm-roberta-base
+- xlm-robert-large
+
+### Эксперименты
+### Результаты экспериментов
+
+| model | layer number | model accuracy |
+|-------|------------------------|---------------------|
+|winner-solution (bert-base-multilingual-cased) | 12 (MEAN) | 86% |
+| bert-base-multilingual-cased | isnextSentencePrediction | 6.55% |
+| bert-base-multilingual-cased | 12 (CLS) | 45% |
+| bert-base-multilingual-cased | 11 (CLS) | 46,2% |
+| bert-base-multilingual-cased | 10 (CLS) | 46,2% |
+| bert-base-multilingual-cased | 9 (CLS) | 54,3% |
+| bert-base-multilingual-cased | 8 (CLS) | 53,7% |
+| bert-base-multilingual-cased | 7 (CLS) | 52,6% |
+| bert-base-multilingual-cased | 6 (CLS) | 58,9% |
+| bert-base-multilingual-cased | 5 (CLS) | 64,5% |
+| bert-base-multilingual-cased | 4 (CLS) | 77,9% |
+| bert-base-multilingual-cased | 3 (CLS) | 74,7% |
+| bert-base-multilingual-cased | 2 (CLS) | 65,1% |
+| bert-base-multilingual-cased | 1 (CLS) | 57,8% |
+| bert-base-multilingual-cased | 0 (CLS) | 0,005% |
+| DeepPavlov/rubert-base-cased | 4 (CLS) | 74,7% |
+| DeepPavlov/rubert-base-cased-sentence | 5 (CLS) | 72,5% |
+| DeepPavlov/rubert-base-cased-sentence | 4 (CLS) | 80,1% |
+| DeepPavlov/rubert-base-cased-sentence | 3 (CLS) | 74,7% |
+| bert-base-multilingual-cased | 11 (MEAN) | 87% |
+| bert-base-multilingual-cased | 10 (MEAN) | 88% |
+| bert-base-multilingual-cased | 9 (MEAN) | 89% |
+| bert-base-multilingual-cased | 8 (MEAN) | 99% |
+| bert-base-multilingual-cased | 7 (MEAN) | 89% |
+| bert-base-multilingual-cased | 6 (MEAN) | 89,2% |
+| bert-base-multilingual-cased (BEST) | 5 (MEAN) | 90,3% |
+| bert-base-multilingual-cased | 4 (MEAN) | 89,2% |
+| bert-base-multilingual-cased | 3 (MEAN) | 88,7% |
+| bert-base-multilingual-cased | 2 (MEAN) | 88,2% |
+| bert-base-multilingual-cased | 1 (MEAN) | 86% |
+| bert-base-multilingual-cased | 0 (MEAN) | 86% |
+| bert-base-multilingual-cased FULL-TEXT + OPTIONS | 12 (MEAN) | 50% |
+| bert-base-multilingual-cased FULL-TEXT + OPTIONS | 6 (MEAN) | 54% |
+| bert-base-multilingual-cased FULL-TEXT + OPTIONS | 5 (MEAN) | 55,2% |
+| bert-base-multilingual-cased FULL-TEXT + OPTIONS | 0 (MEAN) | 51,2% |
+
+
+### Выводы
+
+Все модели показали приблизительно одинаковую точность. К сожалению не удалось получить хорошую точность используя информацию о тексте из которого нужно извлечь главную информацию.
+Самые лучшие результаты показали 55%. Самая лучшая модель с учетом вариантов ответа была bert-base-multilingual-cased  на 5 слоем - 90.3%.
+ 
+В дальнейшем хотелось бы повысить точность модели (FULL-TEXT + OPTIONS). Скорей всего этот текст нужно как-то уменьшать. Возможно через суммаризацию.
+
+
+Литература:
+- https://arxiv.org/abs/1810.04805
+- https://medium.com/analytics-vidhya/semantic-similarity-in-sentences-and-bert-e8d34f5a4677
+- https://towardsdatascience.com/overview-of-text-similarity-metrics-3397c4601f50
+- https://medium.com/@adriensieg/text-similarities-da019229c894
