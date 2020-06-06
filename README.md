@@ -276,3 +276,76 @@ Word sense disambiguation rue решает задачу 3 из ЕГЭ.
 2. Пробовать более большие модели (ex. xlm-roberta)
 
 
+# Kaggle соревнование jigsaw-multilingual-toxic-comment-classification
+
+https://www.kaggle.com/c/jigsaw-multilingual-toxic-comment-classification
+
+Описание задания:
+
+It only takes one toxic comment to sour an online discussion. The Conversation AI team, a research initiative founded by Jigsaw and Google, builds technology to protect voices in conversation. A main area of focus is machine learning models that can identify toxicity in online conversations, where toxicity is defined as anything rude, disrespectful or otherwise likely to make someone leave a discussion. If these toxic contributions can be identified, we could have a safer, more collaborative internet.
+
+In the previous 2018 Toxic Comment Classification Challenge, Kagglers built multi-headed models to recognize toxicity and several subtypes of toxicity. In 2019, in the Unintended Bias in Toxicity Classification Challenge, you worked to build toxicity models that operate fairly across a diverse range of conversations. This year, we're taking advantage of Kaggle's new TPU support and challenging you to build multilingual models with English-only training data.
+
+Jigsaw's API, Perspective, serves toxicity models and others in a growing set of languages (see our documentation for the full list). Over the past year, the field has seen impressive multilingual capabilities from the latest model innovations, including few- and zero-shot learning. We're excited to learn whether these results "translate" (pun intended!) to toxicity classification. Your training data will be the English data provided for our previous two competitions and your test data will be Wikipedia talk page comments in several different languages.
+
+As our computing resources and modeling capabilities grow, so does our potential to support healthy conversations across the globe. Develop strategies to build effective multilingual models and you'll help Conversation AI and the entire industry realize that potential.
+
+
+Участники: `LeonidMorozov`, `MTETERIN`
+
+Литература:
+- https://arxiv.org/abs/1810.04805
+- https://arxiv.org/abs/1907.11692
+- https://en.wikipedia.org/wiki/Tf-idf
+- https://en.wikipedia.org/wiki/Logistic_regression
+
+
+# Dataset
+
+Датасет -- мы попробовали взять свободный датасет RuTweetCorp (http://study.mokoron.com/) и разметить его.
+Датасет состоит из 2 частей: positive и negative.
+Мы решили попробовать разметить часть датасета и посмотреть результаты. 
+Для этого мы взяли по 1000 самых длинных сообщений из positive и negative.
+Так же мы стали размечать по toxic levels -- 1,2,3,4,5
+Это дало нам некоторую свободу в том, какой level наиболее близкий к toxic из оригинальных датасетов. 
+В итоге наиболее близкий результат дали tocix = level > 2 
+Но общие результаты с этим датасетом оказались не очень, и мы решили просто перевести оригинальный en-датасет на нужные языки.
+Для этого мы воспользовалить MarianMTModel и перевели EN toxic комментарии на ES, PT, TR, IT, FR и даже RU
+
+
+### Эксперименты
+
+Мы взяли вот этот kernel как baseline: https://www.kaggle.com/shonenkov/tpu-training-super-fast-xlmrobe
+
+Мы так же провели множество экспериментов с data pre-processing, обучения BERT models (остановились на bert-base-multilingual-cased)
+Так же TF-IDF с LogReg дали достаточно хорошие результаты.
+
+| experiment | score | bump |
+|------------|-------|------|
+| Baseline RoBERTa Kernel | 94.16 | +0.0 |
+| RoBERTa + BERT | 94.32 | +0.16 | 
+| RoBERTa + BERT + TF-IDF | 94.39 | +0.07 |
+| RoBERTa + BERT + TF-IDF + extra-datasets | 94.50 | +0.11 |
+| fine-tune TF-IDF | 94.66 | +0.06 |
+| fine-tune Ensemble | 94.70 | +0.04 |
+
+Data pre-processing, который показали наилучший результат
+- data shuffling
+- remove duplication records with probability 0.95
+- remove numbers from texts with probability 0.95
+- remove hashtags from texts with probability 0.95 • remove urls from texts with probability 0.95
+- remove usernames from texts with probability 0.95
+
+### Выводы
+
+1. оригинальный датасет достаточно грязный, много ошибок (outliers)
+2. похоже, что RoBERT и BERT ошибаются на очень длинных текстах, пожно попробовать ToBERT https://arxiv.org/pdf/1910.10781.pdf
+3. так же можно попробовать per-lang TF-IDF-based classic ML решения
+
+
+### Что дальше?
+
+1. Пробовать чистить данные, как-то идентифицировать outliers и выкинуть их из обучающей выборки, но не все, оставив как-то шум.
+2. Пробовать ToBERT https://arxiv.org/pdf/1910.10781.pdf
+3. Попробовать per-lang TF-IDF-based classic ML решения
+4. перевести больше toxic сообщений, т.к. train data сильно скошена в сторону non-toxic комментариев
